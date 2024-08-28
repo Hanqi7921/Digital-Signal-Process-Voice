@@ -9,6 +9,8 @@ from function.Speech_Echo import remove_echo
 
 new_image_path_1 = "Img_result\PNG\original.png"
 new_image_path_2 = "Img_result\PNG\change.png"
+max_width = 450
+max_height = 280
 class Application(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -23,7 +25,7 @@ class Application(tk.Frame):
         self.top_frame.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
         # Add the title label
-        self.label01 = Label(self.top_frame, text="上海大学 数字信号处理", font=("黑体", 20))
+        self.label01 = Label(self.top_frame, text="上海大学 数字信号处理", font=("楷体", 20))
         self.label01.pack()
 
         # Create a left frame for images
@@ -31,14 +33,12 @@ class Application(tk.Frame):
         self.left_frame.grid(row=1, column=0, padx=10, pady=10, sticky="ns")
 
         # Load and display images
-        self.photo1 = PhotoImage(file="Img_result/GIF/original.gif")
-        self.photo2 = PhotoImage(file="Img_result/GIF/change.gif")
-        self.photo3 = PhotoImage(file="Img_result/GIF/original.gif")
-        self.photo4 = PhotoImage(file="Img_result/GIF/original.gif")
+        self.photo1 = PhotoImage(file="Img_result/GIF/init.gif")
+        self.photo2 = PhotoImage(file="Img_result/GIF/init.gif")
+        self.photo3 = PhotoImage(file="Img_result/GIF/init.gif")
+        self.photo4 = PhotoImage(file="Img_result/GIF/init.gif")
         
         # Resize images if needed
-        max_width = 450
-        max_height = 250
         self.photo1 = self.photo1.subsample(max(self.photo1.width() // max_width, 1),
                                             max(self.photo1.height() // max_height, 1))
         self.photo2 = self.photo2.subsample(max(self.photo2.width() // max_width, 1),
@@ -49,17 +49,25 @@ class Application(tk.Frame):
                                             max(self.photo4.height() // max_height, 1))
         
         # Create image labels
-        self.img1 = Label(self.left_frame, image=self.photo1)
-        self.img1.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        self.img1_title = Label(self.left_frame,text="初始音频时域图像",font=("楷体", 16))
+        self.img1_title.grid(row=0, column=0, sticky="nsew")
+        self.img1 = Label(self.left_frame,image=self.photo1)
+        self.img1.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
         
+        self.img2_title = Label(self.left_frame,text="变化音频时域图像",font=("楷体", 16))
+        self.img2_title.grid(row=0, column=1, sticky="nsew")
         self.img2 = Label(self.left_frame, image=self.photo2)
-        self.img2.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        self.img2.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
         
+        self.img3_title = Label(self.left_frame,text="初始音频频谱",font=("楷体", 16))
+        self.img3_title.grid(row=2, column=0, sticky="nsew")
         self.img3 = Label(self.left_frame, image=self.photo3)
-        self.img3.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        self.img3.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
         
+        self.img4_title = Label(self.left_frame,text="变化音频频谱",font=("楷体", 16))
+        self.img4_title.grid(row=2, column=1, sticky="nsew")
         self.img4 = Label(self.left_frame, image=self.photo4)
-        self.img4.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
+        self.img4.grid(row=3, column=1, padx=5, pady=5, sticky="nsew")
 
         # Create a right frame for buttons
         self.right_frame = tk.Frame(self)
@@ -152,8 +160,6 @@ class Application(tk.Frame):
     def update_image(self, label, image_path):
         # 加载新图片并调整大小
         new_photo = PhotoImage(file=image_path)
-        max_width = 450
-        max_height = 250
         new_photo = new_photo.subsample(max(new_photo.width() // max_width, 1),
                                         max(new_photo.height() // max_height, 1))
         # 更新Label的图像
@@ -165,7 +171,7 @@ class Application(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("数字信号处理")
-    root.geometry("1200x700+100+100")
+    root.geometry("1150x800+100+100")
     app = Application(root)
     audio=Audio()
     root.mainloop()
