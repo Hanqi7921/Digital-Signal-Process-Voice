@@ -4,6 +4,7 @@ from tkinter import filedialog
 from function.audio_record import Audio
 from function.Speech_Enhancement import Spectral_subtraction
 from function.Speech_Endpoint import Speech_Endpoint
+from function.Speech_Echo import add_echo
 
 new_image_path_1 = "Img_result\PNG\original.png"
 new_image_path_2 = "Img_result\PNG\change.png"
@@ -120,7 +121,8 @@ class Application(tk.Frame):
         print("语音增强")
 
     def Callback_Echo(self):
-        messagebox.showinfo("提示", "添加回声")
+        print("0")
+        add_echo('library\SHU.wav', 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
         print("添加回声")
 
     def Callback_DelEcho(self):
