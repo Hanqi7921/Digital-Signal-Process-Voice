@@ -5,6 +5,7 @@ from function.audio_record import Audio
 from function.Speech_Enhancement import Spectral_subtraction
 from function.Speech_Endpoint import Speech_Endpoint
 from function.Speech_Echo import add_echo
+from function.Speech_Echo import remove_echo
 
 new_image_path_1 = "Img_result\PNG\original.png"
 new_image_path_2 = "Img_result\PNG\change.png"
@@ -14,6 +15,7 @@ class Application(tk.Frame):
         self.master = root
         self.grid(sticky="nsew")
         self.create_widgets()
+        self.choice_path = None
 
     def create_widgets(self):
         # Create a top frame for the title label
@@ -89,6 +91,7 @@ class Application(tk.Frame):
         #finish
         file_path= filedialog.askopenfilename()
         # global audio_object
+        self.choice_path=file_path
         audio_object=audio.read(file_path) # 返回的是Audio object
         audio.object = audio_object
         audio.samples=audio_object.samples # 获取音频中的所有样本
@@ -113,6 +116,7 @@ class Application(tk.Frame):
         audio.sr=audio_object.sr       
         print("已完成录制音频")
         audio_object.save(direction = "library\SHU.wav")
+        self.choice_path="library\SHU.wav"
         messagebox.showinfo("提示", "录制完成！")
         print("已完成保存音频")
         
@@ -121,12 +125,15 @@ class Application(tk.Frame):
         print("语音增强")
 
     def Callback_Echo(self):
-        print("0")
-        add_echo('library\SHU.wav', 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
+        add_echo(self.choice_path, 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
+        self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
         print("添加回声")
 
     def Callback_DelEcho(self):
-        messagebox.showinfo("提示", "去除回声")
+        #那我直接播放原声好了？？
+        #但是为了显示效果，我还是添加了消除回声的算法
+        remove_echo(self.choice_path)
+        self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
         print("去除回声")
 
     def Callback_Detection(self):
