@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import PhotoImage, Button, Label, messagebox
-from audio_record import Audio
 from tkinter import filedialog
-from Speech_Enhancement import Spectral_subtraction
-from Speech_Endpoint import Speech_Endpoint
+from function.audio_record import Audio
+from function.Speech_Enhancement import Spectral_subtraction
+from function.Speech_Endpoint import Speech_Endpoint
 
 new_image_path_1 = "Img_result\PNG\original.png"
 new_image_path_2 = "Img_result\PNG\change.png"
@@ -98,6 +98,7 @@ class Application(tk.Frame):
         print("audio.duration:",audio.duration)
         print("audio.samples_counts:",audio.samples_counts)
         print("audio.sr:",audio.sr)
+        messagebox.showinfo("提示", "导入文件成功！")
         print("已完成打开文件")
 
     def Callback_Record(self):
@@ -110,7 +111,8 @@ class Application(tk.Frame):
         audio.samples_counts=len(audio_object)
         audio.sr=audio_object.sr       
         print("已完成录制音频")
-        audio_object.save(direction = "SHU.wav")
+        audio_object.save(direction = "library\SHU.wav")
+        messagebox.showinfo("提示", "录制完成！")
         print("已完成保存音频")
         
     def Callback_Augmentation(self):

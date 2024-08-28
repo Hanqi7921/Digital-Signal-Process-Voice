@@ -2,7 +2,7 @@ import pyAudioKits.audio as ak
 import numpy as np
 import pyAudioKits.analyse as aly
 import pyAudioKits.algorithm as alg
-from png2gif import PNG2GIF
+from tool.png2gif import PNG2GIF
 
 #https://github.com/HarmoniaLeo/pyAudioKits/blob/main/6.%20Endpoint%20Detection%20and%20Speech%20Recognition.ipynb
 def Speech_Endpoint(detect_audio):

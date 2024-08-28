@@ -2,7 +2,7 @@ import pyAudioKits.record
 import pyAudioKits.audio as ak
 import sounddevice as sd  
 import numpy as np  
-from png2gif import PNG2GIF
+from tool.png2gif import PNG2GIF
 
 class Audio:
     def __init__(self):
