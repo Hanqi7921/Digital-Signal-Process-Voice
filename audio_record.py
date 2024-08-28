@@ -3,10 +3,10 @@ import pyAudioKits.audio as ak
 import sounddevice as sd  
 import numpy as np  
 from png2gif import PNG2GIF
-global audio
 
 class Audio:
     def __init__(self):
+        self.object = None
         self.samples = None
         self.sr = None
         self.duration = None

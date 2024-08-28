@@ -1,11 +1,8 @@
-# print("mymain检查点1")
 import tkinter as tk
-# print("mymain检查点2")
 from tkinter import PhotoImage, Button, Label, messagebox
-# print("mymain检查点3")
 from audio_record import Audio
-# print("mymain检查点4")
 from tkinter import filedialog
+from Speech_Enhancement import Spectral_subtraction
 
 class Application(tk.Frame):
     def __init__(self, root):
@@ -30,7 +27,7 @@ class Application(tk.Frame):
         # Load and display images
         self.photo1 = PhotoImage(file="Img_result\GIF\original.gif")
         # 设置图片的最大宽度和高度
-        max_width = 400  # 例如，最大宽度为200像素
+        max_width = 420  # 例如，最大宽度为200像素
         max_height = 350  # 例如，最大高度为200像素
         self.photo1 = self.photo1.subsample(max(self.photo1.width() // max_width, 1),
                                             max(self.photo1.height() // max_height, 1))
@@ -73,8 +70,9 @@ class Application(tk.Frame):
     def Callback_Openfile(self):
         #finish
         file_path= filedialog.askopenfilename()
-        global audio_object
+        # global audio_object
         audio_object=audio.read(file_path) # 返回的是Audio object
+        audio.object = audio_object
         audio.samples=audio_object.samples # 获取音频中的所有样本
         audio.duration=audio_object.getDuration # 获取音频的持续时间 （秒）
         audio.samples_counts=len(audio_object) # 获取音频的样本计数。
@@ -87,7 +85,9 @@ class Application(tk.Frame):
 
     def Callback_Record(self):
         #finish
+        # global audio_object
         audio_object=audio.record(44100,5)
+        audio.object = audio_object
         audio.samples=audio_object.samples # 获取音频中的所有样本
         audio.duration=audio_object.getDuration
         audio.samples_counts=len(audio_object)
@@ -95,10 +95,9 @@ class Application(tk.Frame):
         print("已完成录制音频")
         audio_object.save(direction = "SHU.wav")
         print("已完成保存音频")
-
-
+        
     def Callback_Augmentation(self):
-        messagebox.showinfo("提示", "语音增强")
+        Spectral_subtraction(audio.object)
         print("语音增强")
 
     def Callback_Echo(self):
@@ -115,8 +114,8 @@ class Application(tk.Frame):
 
     def Callback_Play(self):
         #finish
-        audio.play(audio_object)
-        audio.plot(audio_object)
+        audio.play(audio.object)
+        audio.plot(audio.object)
         print("播放音频")
         new_image_path = "Img_result\PNG\original.png"
         self.update_image(self.original_img, new_image_path)  # 更新第一张图片
@@ -125,7 +124,7 @@ class Application(tk.Frame):
     def update_image(self, label, image_path):
         # 加载新图片并调整大小
         new_photo = PhotoImage(file=image_path)
-        max_width = 400
+        max_width = 420
         max_height = 350
         new_photo = new_photo.subsample(max(new_photo.width() // max_width, 1),
                                         max(new_photo.height() // max_height, 1))
@@ -138,7 +137,7 @@ class Application(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("数字信号处理")
-    root.geometry("1000x500+100+100")
+    root.geometry("1200x500+100+100")
     app = Application(root)
     audio=Audio()
     root.mainloop()
