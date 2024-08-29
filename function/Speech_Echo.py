@@ -2,6 +2,7 @@ import sounddevice as sd
 import numpy as np
 import soundfile as sf
 import pyAudioKits.audio as ak
+import pyAudioKits.analyse as aly
 from tool.png2gif import PNG2GIF
 
 def add_echo(input_path, output_path, delay_seconds=0.3, decay=0.5):
@@ -36,6 +37,7 @@ def add_echo(input_path, output_path, delay_seconds=0.3, decay=0.5):
     output_audio = ak.Audio(echo_samples, sr)
     output_audio.save(direction = "library\output_echo.wav")
     output_audio.plot(imgPath="Img_result\PNG\change.png")
+    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
     PNG2GIF()
     output_audio.sound()
 
@@ -109,6 +111,7 @@ def remove_echo(input_path, delay=100, decay=0.5):
     output_audio.save(direction = "library\output_clean.wav")
     print("haha")
     output_audio.plot(imgPath="Img_result\PNG\change.png")
+    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
     PNG2GIF()
     output_audio.sound()
 

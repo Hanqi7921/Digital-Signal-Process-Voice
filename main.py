@@ -7,10 +7,15 @@ from function.Speech_Endpoint import Speech_Endpoint
 from function.Speech_Echo import add_echo
 from function.Speech_Echo import remove_echo
 
+
 new_image_path_1 = "Img_result\PNG\original.png"
 new_image_path_2 = "Img_result\PNG\change.png"
+new_image_path_3 = "Img_result\PNG\original_fft.png"
+new_image_path_4 = "Img_result\PNG\change_fft.png"
+
 max_width = 450
 max_height = 280
+
 class Application(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -35,8 +40,8 @@ class Application(tk.Frame):
         # Load and display images
         self.photo1 = PhotoImage(file="Img_result/GIF/init.gif")
         self.photo2 = PhotoImage(file="Img_result/GIF/init.gif")
-        self.photo3 = PhotoImage(file="Img_result/GIF/init.gif")
-        self.photo4 = PhotoImage(file="Img_result/GIF/init.gif")
+        self.photo3 = PhotoImage(file="Img_result/GIF/init_fft.gif")
+        self.photo4 = PhotoImage(file="Img_result/GIF/init_fft.gif")
         
         # Resize images if needed
         self.photo1 = self.photo1.subsample(max(self.photo1.width() // max_width, 1),
@@ -94,7 +99,7 @@ class Application(tk.Frame):
         
         self.btn_play = Button(self.right_frame, text="播放音频", width=12, height=2, command=self.Callback_Play)
         self.btn_play.grid(row=6, column=0, pady=5)
-
+        
     def Callback_Openfile(self):
         #finish
         file_path= filedialog.askopenfilename()
@@ -129,32 +134,48 @@ class Application(tk.Frame):
         print("已完成保存音频")
         
     def Callback_Augmentation(self):
-        Spectral_subtraction(audio.object)
-        print("语音增强")
+        allowin=self.check_audio()
+        if allowin == True:
+            Spectral_subtraction(audio.object)
+            self.update_image(self.img2, new_image_path_2)  # 更新第一张图片
+            self.update_image(self.img4, new_image_path_4)  # 更新第一张图片
+            print("语音增强")
 
     def Callback_Echo(self):
-        add_echo(self.choice_path, 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
-        self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
-        print("添加回声")
+        allowin=self.check_audio()
+        if allowin == True:
+            add_echo(self.choice_path, 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
+            self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
+            self.update_image(self.img4, new_image_path_4)  # 更新第一张图片
+            print("添加回声")
 
     def Callback_DelEcho(self):
+        allowin=self.check_audio()
+        if allowin == True:
         #那我直接播放原声好了？？
         #但是为了显示效果，我还是添加了消除回声的算法
-        remove_echo(self.choice_path)
-        self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
-        print("去除回声")
+            remove_echo(self.choice_path)
+            self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
+            self.update_image(self.img4, new_image_path_4)  # 更新第一张图片
+            print("去除回声")
 
     def Callback_Detection(self):
-        Speech_Endpoint(audio.object)
-        self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
-        print("端点检测")
+        allowin=self.check_audio()
+        if allowin == True:
+            Speech_Endpoint(audio.object)
+            self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
+            self.update_image(self.img4, new_image_path_4)  # 更新第一张图片
+            print("端点检测")
 
     def Callback_Play(self):
+        allowin=self.check_audio()
+        if allowin == True:
         #finish
-        audio.play(audio.object)
-        audio.plot(audio.object)
-        print("播放音频")
-        self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
+            audio.play(audio.object)
+            audio.plot(audio.object)
+            print("播放音频")
+            self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
+            self.update_image(self.img3, new_image_path_3)  # 更新第一张图片
 
     
     def update_image(self, label, image_path):
@@ -166,6 +187,13 @@ class Application(tk.Frame):
         label.config(image=new_photo)
         # 保存对新图片的引用，防止垃圾回收
         label.image = new_photo
+        
+    def check_audio(self):
+        if audio.object==None:
+            messagebox.showinfo("提示", "请打开音频或者录制音频！")
+            return False
+        else:
+            return True
 
 
 if __name__ == "__main__":

@@ -14,4 +14,5 @@ def Speech_Endpoint(detect_audio):
     # and a short-time over-zero rate threshold of 400
     # '''
     vad_result.plot(imgPath="Img_result\PNG\change.png")
+    aly.FFT(vad_result.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
     PNG2GIF()
