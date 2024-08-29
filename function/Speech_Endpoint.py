@@ -14,5 +14,5 @@ def Speech_Endpoint(detect_audio):
     # and a short-time over-zero rate threshold of 400
     # '''
     detect_audio.sound()
-    vad_result.plot(imgPath="Img_result\PNG\change.png")
+    vad_result.plot(imgPath="Image\PNG\change.png")
     PNG2GIF()

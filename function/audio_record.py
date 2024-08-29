@@ -12,8 +12,10 @@ class Audio:
         self.sr = None
         self.duration = None
 
-    def play(self,audiopj):
-        audiopj.sound()
+    def play(self):
+        print("111")
+        type(self.object)
+        self.object.sound()
 
     def record(self, sr, recordSeconds):
         print("开始录制...")  
@@ -21,12 +23,13 @@ class Audio:
 
     def read(self, path):
         # print(self.read_Audio(path))
-        return ak.read_Audio(path)
+        self.object = ak.read_Audio(path)
+        return self.object 
 
-    def plot(self,audiopj):
+    def plot(self):
         print("开始绘制波形图...")
-        audiopj.plot(start=0, end=None, ylim=None, ax=None, imgPath="Img_result\PNG\original.png", xlabel="t/s")
-        aly.FFT(audiopj.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\original_fft.png")
+        self.object.plot(imgPath="Image\PNG\original.png")
+        aly.FFT(self.object.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Image\PNG\original_fft.png")
         PNG2GIF()
         
 

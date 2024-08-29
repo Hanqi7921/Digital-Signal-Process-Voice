@@ -5,7 +5,7 @@ import pyAudioKits.audio as ak
 import pyAudioKits.analyse as aly
 from tool.png2gif import PNG2GIF
 
-def add_echo(input_path, output_path, delay_seconds=0.3, decay=0.5):
+def add_echo(input_path, delay_seconds=0.3, decay=0.5):
     """
     给音频添加回声效果（单通道）
     :param input_path: 输入音频文件的路径
@@ -35,9 +35,9 @@ def add_echo(input_path, output_path, delay_seconds=0.3, decay=0.5):
     echo_samples[delay_samples:] += decay * echo_samples[:len(samples)]
     # 写入带有回声的音频到新的WAV文件
     output_audio = ak.Audio(echo_samples, sr)
-    output_audio.save(direction = "library\output_echo.wav")
-    output_audio.plot(imgPath="Img_result\PNG\change.png")
-    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
+    output_audio.save(direction = "Wav\output_echo.wav")
+    output_audio.plot(imgPath="Image\PNG\change.png")
+    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Image\PNG\change_fft.png")
     PNG2GIF()
     output_audio.sound()
 
@@ -108,10 +108,10 @@ def remove_echo(input_path, delay=100, decay=0.5):
     print("yes")
     output_audio = ak.Audio(clean_signal, sr)
     print("no")
-    output_audio.save(direction = "library\output_clean.wav")
+    output_audio.save(direction = "Wav\output_clean.wav")
     print("haha")
-    output_audio.plot(imgPath="Img_result\PNG\change.png")
-    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
+    output_audio.plot(imgPath="Image\PNG\change.png")
+    aly.FFT(output_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Image\PNG\change_fft.png")
     PNG2GIF()
     output_audio.sound()
 

@@ -8,6 +8,6 @@ from tool.png2gif import PNG2GIF
 def Spectral_subtraction(before_audio):
     after_audio=alg.specSubstract(before_audio,before_audio[before_audio.getDuration()-0.8:])
     after_audio.sound()
-    after_audio.plot(imgPath="Img_result\PNG\change.png")
-    aly.FFT(after_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
+    after_audio.plot(imgPath="Image\PNG\change.png")
+    aly.FFT(after_audio.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Image\PNG\change_fft.png")
     PNG2GIF()   

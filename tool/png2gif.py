@@ -2,9 +2,9 @@ import os
 from PIL import Image
 
 # 指定包含PNG图片的目录
-source_dir = 'Img_result\PNG'
+source_dir = 'Image\PNG'
 # 指定转换后的GIF图片存放的目录
-output_dir = 'Img_result\GIF'
+output_dir = 'Image\GIF'
 
 def PNG2GIF():
     # 遍历指定目录下的所有PNG文件
