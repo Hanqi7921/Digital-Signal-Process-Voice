@@ -1,5 +1,6 @@
 import pyAudioKits.record
 import pyAudioKits.audio as ak
+import pyAudioKits.analyse as aly
 import sounddevice as sd  
 import numpy as np  
 from tool.png2gif import PNG2GIF
@@ -25,6 +26,7 @@ class Audio:
     def plot(self,audiopj):
         print("开始绘制波形图...")
         audiopj.plot(start=0, end=None, ylim=None, ax=None, imgPath="Img_result\PNG\original.png", xlabel="t/s")
+        aly.FFT(audiopj.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\original_fft.png")
         PNG2GIF()
         
 

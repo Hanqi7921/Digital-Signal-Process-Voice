@@ -13,6 +13,6 @@ def Speech_Endpoint(detect_audio):
     # a higher short-time energy threshold of 0.5, 
     # and a short-time over-zero rate threshold of 400
     # '''
+    detect_audio.sound()
     vad_result.plot(imgPath="Img_result\PNG\change.png")
-    aly.FFT(vad_result.framing()).plot(freq_scale="mel", plot_type="dB",imgPath="Img_result\PNG\change_fft.png")
     PNG2GIF()

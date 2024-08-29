@@ -117,6 +117,7 @@ class Application(tk.Frame):
         print("audio.sr:",audio.sr)
         messagebox.showinfo("提示", "导入文件成功！")
         print("已完成打开文件")
+        self.play_prep()
 
     def Callback_Record(self):
         #finish
@@ -132,9 +133,12 @@ class Application(tk.Frame):
         self.choice_path="library\SHU.wav"
         messagebox.showinfo("提示", "录制完成！")
         print("已完成保存音频")
+        audio.plot(audio.object)
+        self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
+        self.update_image(self.img3, new_image_path_3)  # 更新第一张图片
         
     def Callback_Augmentation(self):
-        allowin=self.check_audio()
+        allowin=(self.check_audio()&self.play_prep())
         if allowin == True:
             Spectral_subtraction(audio.object)
             self.update_image(self.img2, new_image_path_2)  # 更新第一张图片
@@ -142,7 +146,7 @@ class Application(tk.Frame):
             print("语音增强")
 
     def Callback_Echo(self):
-        allowin=self.check_audio()
+        allowin=(self.check_audio()&self.play_prep())
         if allowin == True:
             add_echo(self.choice_path, 'library\output_with_echo_mono.wav')  # 添加回声到单通道音频并保存
             self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
@@ -150,7 +154,7 @@ class Application(tk.Frame):
             print("添加回声")
 
     def Callback_DelEcho(self):
-        allowin=self.check_audio()
+        allowin=(self.check_audio()&self.play_prep())
         if allowin == True:
         #那我直接播放原声好了？？
         #但是为了显示效果，我还是添加了消除回声的算法
@@ -164,20 +168,24 @@ class Application(tk.Frame):
         if allowin == True:
             Speech_Endpoint(audio.object)
             self.update_image(self.img2, new_image_path_2)  # 更新第二张图片
+            new_image_path_4=new_image_path_3
             self.update_image(self.img4, new_image_path_4)  # 更新第一张图片
             print("端点检测")
 
     def Callback_Play(self):
         allowin=self.check_audio()
         if allowin == True:
-        #finish
-            audio.play(audio.object)
-            audio.plot(audio.object)
-            print("播放音频")
-            self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
-            self.update_image(self.img3, new_image_path_3)  # 更新第一张图片
+            self.play_prep()
+            
 
-    
+    def play_prep(self):
+        audio.play(audio.object)
+        audio.plot(audio.object)
+        print("播放音频")
+        self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
+        self.update_image(self.img3, new_image_path_3)  # 更新第一张图片
+        return True
+        
     def update_image(self, label, image_path):
         # 加载新图片并调整大小
         new_photo = PhotoImage(file=image_path)
