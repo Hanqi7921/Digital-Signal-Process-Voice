@@ -1,6 +1,8 @@
 import tkinter as tk
+import time  
+import threading
 from tkinter import PhotoImage, Button, Label, messagebox
-from tkinter import filedialog
+from tkinter import filedialog,ttk
 from function.audio_record import Audio
 from function.Speech_Enhancement import Spectral_subtraction
 from function.Speech_Endpoint import Speech_Endpoint
@@ -18,6 +20,125 @@ max_height_up = 350
 max_width_down = 650
 max_height_down = 380
 
+class RecordingDialog(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("录制音频")
+        self.geometry("300x200")
+        self.stop_thread = False  # 停止标志
+        self.recording_thread = None
+        # Center the dialog on the screen
+        self.center_on_screen()
+        self.transient(parent)
+        self.grab_set()
+        
+        self.duration_var = tk.IntVar(value=5)  # Default duration is 5 seconds
+
+        # Create and layout widgets
+        tk.Label(self, text="录音时长(秒)").pack(pady=10)
+        self.duration_entry = tk.Entry(self, textvariable=self.duration_var)
+        self.duration_entry.pack(pady=5)
+
+        self.start_button = tk.Button(self, text="开始录音", command=self.start_recording)
+        self.start_button.pack(pady=10)
+
+        # Add timer and progress bar
+        self.timer_label = tk.Label(self, text="00:00", font=("Helvetica", 12))
+        self.timer_label.pack(pady=5)
+
+        self.progress_bar = ttk.Progressbar(self, orient="horizontal", length=200, mode="determinate")
+        self.progress_bar.pack(pady=5)
+     
+        self.recording = False
+        
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def start_recording(self):
+      
+        duration = self.duration_var.get()
+        if duration <= 0:
+            messagebox.showerror("错误", "录音时长必须大于0秒。")
+            return
+        
+        self.recording = True
+        self.start_button.config(state="disabled")
+        self.progress_bar["maximum"] = duration
+
+        self.start_time = time.time()
+        self.update_timer()
+        
+        # Start recording in a separate thread
+        self.recording_thread = threading.Thread(target=self.record_audio, args=(duration,))
+        self.recording_thread.start()
+            
+    def record_audio(self, duration):
+        audio_object = audio.record(44100, duration)
+        audio.object = audio_object
+        audio.samples = audio_object.samples
+        audio.duration = audio_object.getDuration()
+        audio.samples_counts = len(audio_object)
+        audio.sr = audio_object.sr
+        
+        audio_object.save(direction="Wav/tmp.wav")
+        self.master.choice_path = "Wav/tmp.wav"
+        
+        self.recording = False
+        print(111)
+        self.master.after(0, lambda: messagebox.showinfo("提示", "录制完成,请查看Wav/tmp.wav!"))
+        self.clear_progress()
+        return#录制完成
+            
+            
+    def update_timer(self):
+        if self.recording:
+            elapsed_time = int(time.time() - self.start_time)
+            minutes, seconds = divmod(elapsed_time, 60)
+            self.timer_label.config(text=f"{minutes:02}:{seconds:02}")
+
+            # Update progress bar
+            self.progress_bar["value"] = elapsed_time
+
+            # Check if recording should stop
+            duration = self.duration_var.get()
+            if elapsed_time >= duration:
+                self.recording = False
+                self.start_button.config(state="normal")
+                if self.recording_thread is not None:
+                    self.recording_thread.join()  # 等待线程结束
+            else:
+            # Update timer every second
+                self.after(1000, self.update_timer)
+            
+    def clear_progress(self):
+        self.timer_label.config(text="00:00")
+        self.progress_bar["value"] = 0
+                   
+    def center_on_screen(self):
+    # Get screen dimensions
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Get dialog dimensions
+        dialog_width = 300
+        dialog_height = 200
+
+        # Calculate the position of the dialog
+        x = (screen_width - dialog_width) // 2
+        y = (screen_height - dialog_height) // 2
+
+        # Set the dialog geometry
+        self.geometry(f"{dialog_width}x{dialog_height}+{x}+{y}")
+        
+    def on_closing(self):
+        self.recording = False
+        self.start_button.config(state="normal")
+        if self.recording_thread is not None:
+            self.recording_thread.join()  # 等待线程结束
+        self.master.grab_set(None)
+        self.destroy()
+        self.master.update_image(self.master.img1, new_image_path_1)
+        self.master.update_image(self.master.img3, new_image_path_3)
+        
 class Application(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -30,7 +151,6 @@ class Application(tk.Frame):
         #     self.master.grid_rowconfigure(i, weight=1)
         # for i in range(2):  # 假设有2列
         #     self.master.grid_columnconfigure(i, weight=1)
-
 
     def create_widgets(self):
         
@@ -131,21 +251,8 @@ class Application(tk.Frame):
 
     def Callback_Record(self):
         #finish
-        # global audio_object
-        audio_object=audio.record(44100,5)
-        audio.object = audio_object
-        audio.samples=audio_object.samples # 获取音频中的所有样本
-        audio.duration=audio_object.getDuration
-        audio.samples_counts=len(audio_object)
-        audio.sr=audio_object.sr       
-        print("已完成录制音频")
-        audio_object.save(direction = "Wav\SHU.wav")
-        self.choice_path="Wav\SHU.wav"
-        messagebox.showinfo("提示", "录制完成！")
-        print("已完成保存音频")
-        audio.plot(audio.object)
-        self.update_image(self.img1, new_image_path_1)  # 更新第一张图片
-        self.update_image(self.img3, new_image_path_3)  # 更新第一张图片
+        record_dialog = RecordingDialog(self)
+        self.wait_window(record_dialog)  # Wait until the dialog is closed
         
     def Callback_Augmentation(self):
         allowin=self.check_audio()
@@ -190,7 +297,6 @@ class Application(tk.Frame):
 
     def play_prep(self):
         audio.play()
-        print("fjie")
         audio.plot()
         print("播放音频")
         self.update_image(self.img1, new_image_path_1)  # 更新第一张图片

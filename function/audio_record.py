@@ -13,7 +13,6 @@ class Audio:
         self.duration = None
 
     def play(self):
-        print("111")
         type(self.object)
         self.object.sound()
 
